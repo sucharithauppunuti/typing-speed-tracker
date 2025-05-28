@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'Node18'  // make sure NodeJS is configured in Jenkins with this name
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/sucharithauppunuti/typing-speed-tracker.git', branch: 'main'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('backend') {
+                    bat 'npm install'
+                }
+            }
+        }
+
+        stage('Run Server') {
+            steps {
+                dir('backend') {
+                    bat 'start /B node server.js'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
+
